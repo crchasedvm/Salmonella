@@ -125,8 +125,8 @@
                 <p class="text-gray-600 mb-8">This section explains how *Salmonella* causes disease and spreads on-farm. The primary route is fecal-oral, but the cycle is complex, involving carrier animals, environmental contamination, and various stressors.</p>
                 
                 <div class="bg-white p-6 rounded-xl shadow-md mb-8">
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Pathogenesis: From Ingestion to Disease</h3>
-                    <p class="text-gray-600">When ingested, *Salmonella* invades intestinal cells, causing severe inflammation, fluid loss (diarrhoea), and gut damage. In vulnerable animals, it can enter the bloodstream (septicemia), spreading to organs like the lungs and placenta, leading to pneumonia, abortion, and often, rapid death.</p>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Pathogenesis: From Ingestion to Systemic Disease</h3>
+                    <p class="text-gray-700 leading-relaxed">The disease begins when an animal ingests the bacteria. After surviving the stomach's acid, *Salmonella* uses specialized appendages to invade the cells lining the intestines. This invasion triggers a massive inflammatory response, causing severe damage to the gut wall. This damage leads to two key problems: the gut can no longer absorb water, and it begins to leak large amounts of fluid and protein. This results in the profuse, watery diarrhoea characteristic of the disease. <br><br>In vulnerable animals (like calves or stressed cows), the bacteria can break through the damaged gut wall and enter the bloodstream, a condition called septicemia. Once in the blood, the bacteria can travel to vital organs like the lungs, liver, and a pregnant cow's placenta, causing pneumonia, hepatitis, and abortion. The release of bacterial toxins (endotoxins) into the blood can lead to systemic shock, collapse, and rapid death.</p>
                 </div>
 
                 <div class="bg-white p-6 rounded-xl shadow-md">
@@ -235,12 +235,17 @@
                             <li><strong>Effluent & Grazing:</strong> Store effluent before application. Do not exceed 15mm application rates. Observe grazing stand-down periods, especially for transition cows.</li>
                         </ul>
                     </div>
+
                     <div id="vaccination" class="tab-content hidden">
                         <h3 class="font-semibold text-xl mb-4">Vaccination Strategy with Salvexin®+B</h3>
+                        <div class="my-6 flex justify-center">
+                            <img src="https://chasebovineservices.com/wp-content/uploads/2025/08/Salmonella-Vaccine-Protocol.png" 
+                                 alt="Diagram of Salmonella Vaccination Protocol for Dairy Cattle" 
+                                 class="rounded-lg shadow-md max-w-full h-auto border"
+                                 onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML = '<div class=\'p-4 text-center text-red-700 bg-red-100 rounded-lg\'>Could not load the vaccination protocol image. Please refer to the text below for details.</div>';">
+                        </div>
                         <p class="mb-4 text-gray-700">Vaccination is the most effective tool to enhance specific herd immunity. In NZ, <span class="font-bold">Salvexin®+B</span> is the licensed quadrivalent vaccine, targeting *S. Typhimurium*, *S. Bovismorbificans*, *S. Brandenburg*, and *S. Hindmarsh*.</p>
                         <div class="space-y-4">
-                            <img src="https://chasebovineservices.com/wp-content/uploads/2025/08/Salmonella-Vaccine-Protocol.png"
-                                alt="Salmonella Vaccine Strategy" />
                             <div class="p-4 bg-gray-100 rounded-lg">
                                 <h4 class="font-bold">Primary Course (Unvaccinated Animals)</h4>
                                 <p>Two doses are required: a sensitiser followed by a booster at least 4 weeks later.</p>
@@ -351,12 +356,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const cycleExplanation = document.getElementById('cycle-explanation');
 
     const cycleExplanations = {
-        '1': '<strong>1. The Carrier Animal:</strong> Many recovered animals show no signs of illness but continue to harbour *Salmonella* in their gut or lymphoid tissues. They are a persistent, often undetectable, reservoir of infection within the herd.',
-        '2': '<strong>2. Stress-Induced Shedding:</strong> The physiological stress of events like calving, transport, adverse weather, or diet changes can compromise an animal\'s immune system, causing the carrier to begin actively shedding large quantities of bacteria in its faeces.',
-        '3': '<strong>3. Environmental Contamination:</strong> Shed bacteria are highly resilient and can survive for months in soil, pasture, and water sources. This creates a heavily contaminated environment, making eradication difficult.',
-        '4': '<strong>4. Fecal-Oral Transmission:</strong> Healthy herdmates become infected by ingesting bacteria from contaminated feed, water, or pasture. The infective dose required is much lower for stressed animals.',
-        '5': '<strong>5. Amplification During Outbreak:</strong> Clinically sick animals shed vast quantities of bacteria (billions per gram of faeces), acting as potent amplifiers that massively increase the environmental pathogen load and exposure risk for other animals.',
-        '6': '<strong>6. Creation of New Carriers:</strong> A proportion of animals that recover from clinical disease will become new persistent carriers, continuing the cycle for future seasons. Heifers are at particularly high risk of becoming long-term carriers.'
+        '1': '<strong>1. The Carrier Animal:</strong> The cycle begins with an animal that is subclinically infected. It appears perfectly healthy but harbours *Salmonella* in its gut or lymphoid tissues. This animal is a persistent, often undetectable, reservoir of infection within the herd.',
+        '2': '<strong>2. Stress-Induced Shedding:</strong> The physiological stress from events like calving, transport, adverse weather, or sudden diet changes can compromise the carrier\'s immune system. This triggers the animal to begin actively shedding large quantities of bacteria in its faeces, often without showing any signs of illness itself.',
+        '3': '<strong>3. Environmental Contamination:</strong> Shed bacteria are highly resilient and can survive for months in soil, pasture, and water sources, particularly in cool, wet conditions. This creates a heavily contaminated environment, making eradication difficult and ensuring the pathogen persists on farm.',
+        '4': '<strong>4. Fecal-Oral Transmission:</strong> Healthy herdmates become infected by ingesting bacteria from contaminated feed, water, or pasture. The number of bacteria needed to cause disease is significantly lower for animals that are also stressed, making the transition period around calving a particularly high-risk time.',
+        '5': '<strong>5. Amplification During Outbreak:</strong> Clinically sick animals are potent amplifiers. They shed vast quantities of bacteria (billions per gram of faeces), massively increasing the environmental pathogen load and the exposure risk for all other animals in the herd.',
+        '6': '<strong>6. Creation of New Carriers:</strong> A significant portion of animals that recover from clinical disease do not fully clear the infection. They become new, asymptomatic carriers, continuing the cycle for future seasons. Heifers are at particularly high risk of becoming long-term carriers after their first infection.'
     };
 
     function showSection(hash) {
