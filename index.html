@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide to Salmonellosis in NZ Dairy Cattle</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Earthy Neutrals -->
+    <!-- Application Structure Plan: The application is designed as a single-page dashboard with a fixed sidebar navigation for intuitive access to different facets of the Salmonellosis issue. This structure was chosen over a linear report format to allow users (farmers/vets) to quickly jump to the information most relevant to their immediate needs, whether it's understanding the threat, assessing risks, planning prevention, or responding to an outbreak. The user flow is non-linear, encouraging exploration. Key interactions include tabbed content for prevention strategies, clickable cards for risk factors, and an interactive chart for serovar data, all designed to make complex information digestible and actionable. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Key Salmonella Serovars -> Goal: Compare prevalence -> Viz: Donut Chart -> Interaction: Hover for details -> Justification: Quickly shows the proportional threat of each serovar. -> Library: Chart.js (Canvas).
+        - Report Info: Transmission Cycle -> Goal: Organize/Explain process -> Viz: Interactive HTML/CSS Diagram -> Interaction: Click to highlight stages -> Justification: Visually breaks down a complex cycle into understandable steps, more engaging than static text. -> Library/Method: HTML/CSS/JS.
+        - Report Info: On-Farm Risk Factors -> Goal: Inform/Self-assess -> Viz: Interactive Cards -> Interaction: Click to reveal details -> Justification: Allows users to scan risks and dive deeper into those relevant to their farm, reducing cognitive load. -> Library/Method: HTML/CSS/JS.
+        - Report Info: Prevention Strategies -> Goal: Organize/Guide -> Viz: Tabbed Interface -> Interaction: Click tabs (Biosecurity, Vaccination, Nutrition) -> Justification: Segments dense information into manageable themes, improving usability. -> Library/Method: HTML/CSS/JS.
+        - Report Info: Outbreak Response -> Goal: Guide/Checklist -> Viz: Styled Checklist -> Interaction: N/A (informational) -> Justification: Provides a clear, step-by-step emergency action plan. -> Library/Method: HTML/CSS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        .nav-link.active {
+            background-color: #374151;
+            color: #F9FAFB;
+            transform: translateX(4px);
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .tab-button.active {
+            border-color: #4F46E5;
+            color: #4F46E5;
+            background-color: #EEF2FF;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 bg-gray-800 text-white p-4 md:p-6 sticky top-0 md:h-screen">
+            <h1 class="text-2xl font-bold mb-6 text-center md:text-left">Salmonella Guide</h1>
+            <nav id="navigation">
+                <a href="#dashboard" class="nav-link active flex items-center p-3 my-1 rounded-lg hover:bg-gray-700">
+                    <span class="mr-3">📊</span> Dashboard
+                </a>
+                <a href="#threat" class="nav-link flex items-center p-3 my-1 rounded-lg hover:bg-gray-700">
+                    <span class="mr-3">🦠</span> The Threat
+                </a>
+                <a href="#risk-factors" class="nav-link flex items-center p-3 my-1 rounded-lg hover:bg-gray-700">
+                    <span class="mr-3">⚠️</span> Risk Factors
+                </a>
+                <a href="#prevention" class="nav-link flex items-center p-3 my-1 rounded-lg hover:bg-gray-700">
+                    <span class="mr-3">🛡️</span> Prevention Hub
+                </a>
+                <a href="#outbreak" class="nav-link flex items-center p-3 my-1 rounded-lg hover:bg-gray-700">
+                    <span class="mr-3">🚨</span> Outbreak Response
+                </a>
+                <a href="#human-health" class="nav-link flex items-center p-3 my-1 rounded-lg hover:bg-gray-700">
+                    <span class="mr-3">🧑‍⚕️</span> Human Health
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 md:p-10">
+            
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">Dashboard: Salmonellosis at a Glance</h2>
+                <p class="text-gray-600 mb-8">An overview of the current Salmonellosis challenge in New Zealand's dairy sector, highlighting key threats and economic impacts.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="font-bold text-xl text-red-600 mb-2">Major Threat</h3>
+                        <p class="text-gray-600">Now an endemic disease causing significant outbreaks of scouring, abortion, and mortality in NZ dairy cattle.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="font-bold text-xl text-amber-600 mb-2">Economic Impact</h3>
+                        <p class="text-gray-600">A moderate outbreak on a 400-cow farm can cost over <span class="font-bold">$34,000</span> in direct costs alone.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="font-bold text-xl text-blue-600 mb-2">Public Health Risk</h3>
+                        <p class="text-gray-600">Dairy cattle are a primary reservoir for zoonotic strains, directly linking to human cases in New Zealand.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">Key Salmonella Serovars in NZ Dairy Cattle</h3>
+                    <p class="text-center text-gray-600 mb-6">While *S. Typhimurium* was historically dominant, the landscape has shifted. The chart below shows the primary serovars currently causing disease. Understanding these is crucial for diagnosis and control.</p>
+                    <div class="chart-container">
+                        <canvas id="serovarsChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- The Threat Section -->
+            <section id="threat" class="content-section">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">The Threat: Pathogen & Transmission</h2>
+                <p class="text-gray-600 mb-8">This section explains how *Salmonella* causes disease and spreads on-farm. The primary route is fecal-oral, but the cycle is complex, involving carrier animals, environmental contamination, and various stressors.</p>
+                
+                <div class="bg-white p-6 rounded-xl shadow-md mb-8">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Pathogenesis: From Ingestion to Disease</h3>
+                    <p class="text-gray-600">When ingested, *Salmonella* invades intestinal cells, causing severe inflammation, fluid loss (diarrhoea), and gut damage. In vulnerable animals, it can enter the bloodstream (septicemia), spreading to organs like the lungs and placenta, leading to pneumonia, abortion, and often, rapid death.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">The Cycle of Infection</h3>
+                    <p class="text-center text-gray-600 mb-6">The asymptomatic carrier animal is central to the spread of *Salmonella*. Click on the different stages below to understand how the infection is maintained and amplified within a herd.</p>
+                    <div id="transmission-cycle" class="relative p-4">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
+                            <div class="cycle-stage p-4 border-2 border-transparent rounded-lg cursor-pointer bg-gray-100" data-stage="1">
+                                <h4 class="font-bold">1. Carrier Animal</h4>
+                                <p class="text-sm">Healthy-looking but infected animal acts as a reservoir.</p>
+                            </div>
+                            <div class="cycle-stage p-4 border-2 border-transparent rounded-lg cursor-pointer bg-gray-100" data-stage="2">
+                                <h4 class="font-bold">2. Stress Trigger</h4>
+                                <p class="text-sm">Calving, transport, or diet change triggers shedding.</p>
+                            </div>
+                            <div class="cycle-stage p-4 border-2 border-transparent rounded-lg cursor-pointer bg-gray-100" data-stage="3">
+                                <h4 class="font-bold">3. Environmental Contamination</h4>
+                                <p class="text-sm">Bacteria shed in faeces contaminate pasture, water, and feed.</p>
+                            </div>
+                            <div class="cycle-stage p-4 border-2 border-transparent rounded-lg cursor-pointer bg-gray-100" data-stage="4">
+                                <h4 class="font-bold">4. Ingestion by Herdmates</h4>
+                                <p class="text-sm">Healthy animals ingest bacteria from the contaminated environment.</p>
+                            </div>
+                            <div class="cycle-stage p-4 border-2 border-transparent rounded-lg cursor-pointer bg-gray-100" data-stage="5">
+                                <h4 class="font-bold">5. Clinical Disease</h4>
+                                <p class="text-sm">Sick animals shed massive amounts of bacteria, amplifying the outbreak.</p>
+                            </div>
+                             <div class="cycle-stage p-4 border-2 border-transparent rounded-lg cursor-pointer bg-gray-100" data-stage="6">
+                                <h4 class="font-bold">6. New Carriers</h4>
+                                <p class="text-sm">Recovered animals can become new asymptomatic carriers.</p>
+                            </div>
+                        </div>
+                        <div id="cycle-explanation" class="mt-6 p-4 bg-indigo-100 text-indigo-800 rounded-lg">
+                            <p class="font-semibold">Click on a stage to learn more.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Risk Factors Section -->
+            <section id="risk-factors" class="content-section">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">On-Farm Risk Factors</h2>
+                <p class="text-gray-600 mb-8">Modern dairy intensification has created conditions that increase Salmonellosis risk. Click on the cards below to explore the key risk factors identified by New Zealand research.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="risk-card bg-white rounded-xl shadow-md p-6 cursor-pointer hover:shadow-lg transition-shadow">
+                        <h3 class="font-bold text-xl mb-2">Herd Size & Stocking Rate</h3>
+                        <div class="risk-details hidden text-gray-600 mt-2">
+                            <p>Larger herds and higher stocking rates increase the concentration of potential carriers and pathogen load. A 100-cow increase can raise outbreak risk by 20%.</p>
+                        </div>
+                    </div>
+                    <div class="risk-card bg-white rounded-xl shadow-md p-6 cursor-pointer hover:shadow-lg transition-shadow">
+                        <h3 class="font-bold text-xl mb-2">Mixing Stock</h3>
+                        <div class="risk-details hidden text-gray-600 mt-2">
+                            <p>Purchasing/leasing stock or using off-farm grazing are major risks for introducing new strains or carrier animals into a naive herd.</p>
+                        </div>
+                    </div>
+                    <div class="risk-card bg-white rounded-xl shadow-md p-6 cursor-pointer hover:shadow-lg transition-shadow">
+                        <h3 class="font-bold text-xl mb-2">Effluent Management</h3>
+                        <div class="risk-details hidden text-gray-600 mt-2">
+                            <p>Applying effluent at rates over 15mm can increase outbreak risk six-fold by overloading pastures with pathogens.</p>
+                        </div>
+                    </div>
+                    <div class="risk-card bg-white rounded-xl shadow-md p-6 cursor-pointer hover:shadow-lg transition-shadow">
+                        <h3 class="font-bold text-xl mb-2">Wildlife Presence</h3>
+                        <div class="risk-details hidden text-gray-600 mt-2">
+                            <p>The presence of wildlife like deer can increase outbreak risk five-fold. Rodents and birds are also key vectors, contaminating feed and water.</p>
+                        </div>
+                    </div>
+                    <div class="risk-card bg-white rounded-xl shadow-md p-6 cursor-pointer hover:shadow-lg transition-shadow">
+                        <h3 class="font-bold text-xl mb-2">Magnesium Supplementation</h3>
+                        <div class="risk-details hidden text-gray-600 mt-2">
+                            <p>Coarse, pelleted, or prilled forms of magnesium oxide can raise rumen pH, allowing *Salmonella* to bypass the stomach's acid barrier and colonize the intestine.</p>
+                        </div>
+                    </div>
+                     <div class="risk-card bg-white rounded-xl shadow-md p-6 cursor-pointer hover:shadow-lg transition-shadow">
+                        <h3 class="font-bold text-xl mb-2">Staff & Hygiene</h3>
+                        <div class="risk-details hidden text-gray-600 mt-2">
+                            <p>In calf-rearing, each additional staff member can double the risk, highlighting the role of human movement as a vector between vulnerable groups.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Prevention Hub Section -->
+            <section id="prevention" class="content-section">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">Prevention Hub</h2>
+                <p class="text-gray-600 mb-8">Effective prevention is a multi-layered system. A single intervention is not enough. Use the tabs below to explore the core components of building herd resilience: Biosecurity, Vaccination, and Nutrition.</p>
+                
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="border-b border-gray-200 mb-6">
+                        <nav id="prevention-tabs" class="-mb-px flex space-x-6" aria-label="Tabs">
+                            <button class="tab-button active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg" data-tab="biosecurity">🛡️ Biosecurity</button>
+                            <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg text-gray-500 hover:text-gray-700" data-tab="vaccination">💉 Vaccination</button>
+                            <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg text-gray-500 hover:text-gray-700" data-tab="nutrition">🥗 Nutrition</button>
+                        </nav>
+                    </div>
+
+                    <div id="biosecurity" class="tab-content">
+                        <h3 class="font-semibold text-xl mb-4">Foundational Biosecurity & Management</h3>
+                        <ul class="list-disc list-inside space-y-3 text-gray-700">
+                            <li><strong>Closed Herd Priority:</strong> The best prevention. If not possible, source stock from high-health status farms only.</li>
+                            <li><strong>Strict Quarantine:</strong> Isolate all new arrivals for a minimum of 4 weeks. Observe for any signs of disease.</li>
+                            <li><strong>Pest & Wildlife Control:</strong> Implement a continuous program to control rodents and birds. Secure feed stores and maintain boundary fences.</li>
+                            <li><strong>Rigorous Hygiene:</strong> Handle sick animals LAST. Use an all-in/all-out system for calf pens with thorough disinfection. Never feed waste milk to calves.</li>
+                            <li><strong>Effluent & Grazing:</strong> Store effluent before application. Do not exceed 15mm application rates. Observe grazing stand-down periods, especially for transition cows.</li>
+                        </ul>
+                    </div>
+
+                    <div id="vaccination" class="tab-content hidden">
+                        <h3 class="font-semibold text-xl mb-4">Vaccination Strategy with Salvexin®+B</h3>
+                        <p class="mb-4 text-gray-700">Vaccination is the most effective tool to enhance specific herd immunity. In NZ, <span class="font-bold">Salvexin®+B</span> is the licensed quadrivalent vaccine, targeting *S. Typhimurium*, *S. Bovismorbificans*, *S. Brandenburg*, and *S. Hindmarsh*.</p>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-gray-100 rounded-lg">
+                                <h4 class="font-bold">Primary Course (Unvaccinated Animals)</h4>
+                                <p>Two doses are required: a sensitiser followed by a booster at least 4 weeks later.</p>
+                            </div>
+                            <div class="p-4 bg-gray-100 rounded-lg">
+                                <h4 class="font-bold">Annual Booster (Crucial Timing)</h4>
+                                <p>Give a single booster during the dry period (e.g., May). This ensures peak immunity during the high-risk calving period and boosts colostral antibodies for calf protection.</p>
+                            </div>
+                             <div class="p-4 bg-gray-100 rounded-lg">
+                                <h4 class="font-bold">Calf Protection</h4>
+                                <p>Passive immunity from colostrum of vaccinated dams is the calf's first line of defense. For calves from unvaccinated dams, a primary course can begin from 4 weeks of age.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="nutrition" class="tab-content hidden">
+                        <h3 class="font-semibold text-xl mb-4">Nutritional Strategies to Mitigate Risk</h3>
+                        <p class="mb-4 text-gray-700">Nutrition is a key tool for disease mitigation. This involves removing known triggers and using functional additives to enhance gut health and immunity.</p>
+                        <ul class="list-disc list-inside space-y-3 text-gray-700">
+                            <li><strong>Manage Magnesium:</strong> Avoid coarse/pelleted magnesium oxide. Use finely ground (200 mesh) powders or dose soluble forms into water to maintain a healthy gut pH.</li>
+                            <li><strong>MOS & Beta-Glucans:</strong> Derived from yeast cell walls. MOS binds to pathogens like *Salmonella*, preventing them from attaching to the gut wall. Beta-glucans prime the immune system to fight infection.</li>
+                            <li><strong>*Bacillus*-Based Probiotics:</strong> Live beneficial bacteria that survive the stomach to colonize the gut. They out-compete pathogens for space and nutrients and can produce antimicrobial compounds.</li>
+                            <li><strong>SCFP (Postbiotics):</strong> Fermentation products containing a mix of beneficial compounds. Strong evidence shows SCFPs can reduce diarrhoea, limit *Salmonella* colonization, and even reduce the pathogen's virulence and antibiotic resistance.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Outbreak Response Section -->
+            <section id="outbreak" class="content-section">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">🚨 Outbreak Response Plan</h2>
+                <p class="text-gray-600 mb-8">Despite best efforts, outbreaks can happen. A rapid, systematic response is critical to limit spread, save lives, and protect human health. Follow these steps immediately.</p>
+                
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-red-700">Phase 1: Immediate Actions (First 1-12 Hours)</h3>
+                            <ul class="mt-2 list-decimal list-inside space-y-2 text-gray-700">
+                                <li><strong>Isolate Sick Animals:</strong> Immediately move any cow with fever or scours to a dedicated sick pen. This is the single most important step.</li>
+                                <li><strong>Contact Veterinarian:</strong> Essential for diagnosis, treatment protocols, and professional guidance.</li>
+                                <li><strong>Brief Staff & Enforce PPE:</strong> Inform all staff of the zoonotic risk. Mandate gloves and dedicated boots/overalls in the sick area.</li>
+                                <li><strong>Cease Feeding Waste Milk:</strong> Immediately stop feeding any milk from sick or treated cows to calves.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-amber-700">Phase 2: Diagnosis & Treatment (Day 1-3)</h3>
+                            <ul class="mt-2 list-decimal list-inside space-y-2 text-gray-700">
+                                <li><strong>Prioritise Supportive Care:</strong> Aggressive fluid and electrolyte therapy (oral or IV) is the cornerstone of treatment and is often life-saving.</li>
+                                <li><strong>Use Antibiotics Judiciously:</strong> Antibiotics are for systemic cases (septicemia) and must be guided by a vet, ideally based on susceptibility testing to combat resistance.</li>
+                                <li><strong>Consider Outbreak Vaccination:</strong> Discuss with your vet about vaccinating healthy animals to reduce new cases.</li>
+                                <li><strong>Remove Sources:</strong> Safely dispose of aborted foetuses/placentas by deep burial. Inspect feed/water for contamination.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-green-700">Phase 3: Decontamination & Monitoring</h3>
+                             <ul class="mt-2 list-decimal list-inside space-y-2 text-gray-700">
+                                <li><strong>Maintain Strict Biosecurity:</strong> Continue all isolation and hygiene protocols until the vet declares the outbreak over.</li>
+                                <li><strong>Clean & Disinfect:</strong> Once sick pens are empty, thoroughly remove all organic matter, wash, and apply a broad-spectrum disinfectant.</li>
+                                <li><strong>Monitor At-Risk Groups:</strong> Closely watch transition cows and calves for any new signs of illness.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Human Health Section -->
+            <section id="human-health" class="content-section">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">Protecting Human Health</h2>
+                <p class="text-gray-600 mb-8">Salmonellosis is a serious zoonotic disease. During an outbreak, the risk to farm staff and their families is extremely high. Protecting people is a top priority.</p>
+                
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-2xl font-bold text-red-600 mb-4">High-Risk Individuals</h3>
+                    <p class="text-gray-700 mb-6">Young children, the elderly, pregnant women, and immunocompromised individuals are at much higher risk of severe disease. They must be prevented from having any contact with sick animals or the contaminated farm environment.</p>
+                    
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Non-Negotiable Safety Protocols</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-gray-100 p-4 rounded-lg">
+                            <h4 class="font-bold text-lg mb-2">🧤 Personal Protective Equipment (PPE)</h4>
+                            <p>Mandatory use of gloves, waterproof overalls, and dedicated gumboots when handling sick animals. Gear from the sick pen stays in the sick pen.</p>
+                        </div>
+                        <div class="bg-gray-100 p-4 rounded-lg">
+                            <h4 class="font-bold text-lg mb-2">🧼 Rigorous Hand Hygiene</h4>
+                            <p>Wash hands thoroughly with soap and running water after any animal contact, before eating/drinking, and after removing PPE.</p>
+                        </div>
+                        <div class="bg-gray-100 p-4 rounded-lg">
+                            <h4 class="font-bold text-lg mb-2">🏠 Farm-to-House Biosecurity</h4>
+                            <p>Remove all farm boots and overalls before entering the house. Wash work clothes separately from household laundry.</p>
+                        </div>
+                        <div class="bg-gray-100 p-4 rounded-lg">
+                            <h4 class="font-bold text-lg mb-2">🥛 Food Safety</h4>
+                            <p>Strictly ban the consumption of raw milk from the farm during an outbreak. No eating, drinking, or smoking in animal handling areas.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const navigationLinks = document.querySelectorAll('#navigation .nav-link');
+    const contentSections = document.querySelectorAll('.content-section');
+    const preventionTabs = document.querySelectorAll('#prevention-tabs .tab-button');
+    const tabContents = document.querySelectorAll('#prevention .tab-content');
+    const riskCards = document.querySelectorAll('.risk-card');
+    const cycleStages = document.querySelectorAll('.cycle-stage');
+    const cycleExplanation = document.getElementById('cycle-explanation');
+
+    const cycleExplanations = {
+        '1': '<strong>1. The Carrier Animal:</strong> Many recovered animals show no signs of illness but continue to harbour *Salmonella* in their gut or lymphoid tissues. They are a persistent, often undetectable, reservoir of infection within the herd.',
+        '2': '<strong>2. Stress-Induced Shedding:</strong> The physiological stress of events like calving, transport, adverse weather, or diet changes can compromise an animal\'s immune system, causing the carrier to begin actively shedding large quantities of bacteria in its faeces.',
+        '3': '<strong>3. Environmental Contamination:</strong> Shed bacteria are highly resilient and can survive for months in soil, pasture, and water sources. This creates a heavily contaminated environment, making eradication difficult.',
+        '4': '<strong>4. Fecal-Oral Transmission:</strong> Healthy herdmates become infected by ingesting bacteria from contaminated feed, water, or pasture. The infective dose required is much lower for stressed animals.',
+        '5': '<strong>5. Amplification During Outbreak:</strong> Clinically sick animals shed vast quantities of bacteria (billions per gram of faeces), acting as potent amplifiers that massively increase the environmental pathogen load and exposure risk for other animals.',
+        '6': '<strong>6. Creation of New Carriers:</strong> A proportion of animals that recover from clinical disease will become new persistent carriers, continuing the cycle for future seasons. Heifers are at particularly high risk of becoming long-term carriers.'
+    };
+
+    function showSection(hash) {
+        const targetId = hash.substring(1);
+        
+        contentSections.forEach(section => {
+            if (section.id === targetId) {
+                section.classList.add('active');
+            } else {
+                section.classList.remove('active');
+            }
+        });
+
+        navigationLinks.forEach(link => {
+            if (link.getAttribute('href') === hash) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    }
+
+    navigationLinks.forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetHash = this.getAttribute('href');
+            history.pushState(null, null, targetHash);
+            showSection(targetHash);
+        });
+    });
+    
+    window.addEventListener('popstate', () => {
+        showSection(window.location.hash || '#dashboard');
+    });
+
+    showSection(window.location.hash || '#dashboard');
+
+    preventionTabs.forEach(tab => {
+        tab.addEventListener('click', function () {
+            preventionTabs.forEach(t => t.classList.remove('active', 'text-gray-500', 'hover:text-gray-700'));
+            this.classList.add('active');
+            this.classList.remove('text-gray-500', 'hover:text-gray-700');
+
+            const targetId = this.getAttribute('data-tab');
+            tabContents.forEach(content => {
+                if (content.id === targetId) {
+                    content.classList.remove('hidden');
+                } else {
+                    content.classList.add('hidden');
+                }
+            });
+        });
+    });
+
+    riskCards.forEach(card => {
+        card.addEventListener('click', function () {
+            const details = this.querySelector('.risk-details');
+            details.classList.toggle('hidden');
+            this.classList.toggle('bg-indigo-50');
+        });
+    });
+    
+    cycleStages.forEach(stage => {
+        stage.addEventListener('click', function() {
+            cycleStages.forEach(s => s.classList.remove('border-indigo-500', 'bg-indigo-100'));
+            this.classList.add('border-indigo-500', 'bg-indigo-100');
+            const stageKey = this.getAttribute('data-stage');
+            cycleExplanation.innerHTML = cycleExplanations[stageKey];
+        });
+    });
+
+    const serovarsCtx = document.getElementById('serovarsChart').getContext('2d');
+    const serovarsChart = new Chart(serovarsCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['S. Bovismorbificans (Enteric)', 'S. Typhimurium (Enteric)', 'S. Brandenburg (Abortion)', 'S. Give (Emerging Enteric)'],
+            datasets: [{
+                label: 'Prevalence',
+                data: [40, 35, 15, 10],
+                backgroundColor: [
+                    'rgba(220, 38, 38, 0.8)',
+                    'rgba(234, 88, 12, 0.8)',
+                    'rgba(2, 132, 199, 0.8)',
+                    'rgba(107, 114, 128, 0.8)'
+                ],
+                borderColor: [
+                    'rgba(220, 38, 38, 1)',
+                    'rgba(234, 88, 12, 1)',
+                    'rgba(2, 132, 199, 1)',
+                    'rgba(107, 114, 128, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed !== null) {
+                                label += context.parsed + '% of recent cases';
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+
+</body>
+</html>
